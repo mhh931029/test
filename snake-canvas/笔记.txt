@@ -1,0 +1,19 @@
+e.which不是一个事件，which是event对象的一个属性，大多数人e在事件处理程序中标注该属性。它包含被按下以触发事件的键的关键代码（例如：keydown，keyup）。
+document.onmousedown = function(e) {
+    e = e || window.event;
+    var button = (typeof e.which != "undefined") ? e.which : e.button;
+    if (button == 1) {
+        alert("Left mouse button down");
+`````````````````````````````````````````````````````````````
+        Math.abs()方法可返回数的绝对值
+
+        <script type="text/javascript">
+
+        document.write(Math.abs(7.25) + "<br />")
+        document.write(Math.abs(-7.25) + "<br />")
+        document.write(Math.abs(7.25-10))
+        输出：
+        7.25
+        7.25
+        2.75
+        </script>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  
+  <canvas id="my_canvas" width=600 height=500 style="border:solid rgb(239,241,244) 5px"></canvas>
+
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+  <script type="text/javascript">
+  $(document).ready(()=>{
+    let c = document.getElementById("my_canvas").getContext("2d");
+    let obj = document.getElementById("my_canvas").getBoundingClientRect();
+    console.log(obj);
+
+    document.onmousedown = (e)=>{
+      let x = e.clientX - obj.left;
+      let y = e.clientY - obj.top;
+      c.moveTo(x,y);
+
+      document.onmousemove = (e)=>{
+        let x = e.clientX - obj.left;
+        let y = e.clientY - obj.top;
+        c.lineTo(x,y);
+        c.stroke();
+      }
+    }
+
+    document.onmouseup =()=>{
+      document.onmousemove = null;
+    }
+  })
+  
+  </script>
+</body>
+</html>

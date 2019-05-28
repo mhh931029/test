@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>碰撞</title>
+  <style type="text/css">
+    #myCanvas{
+      background-color: black;
+      position: relative;
+      left: 10px;
+      top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="myCanvas" width="500px" height="250px" ></canvas>
+    
+  <script type="text/javascript">
+   window.onload = () =>{
+    let canvas = document.getElementById("myCanvas");
+    let c = canvas.getContext("2d");
+    let px,py;
+    px = py = 20;
+
+    let x ,y;
+    x = y = -20;
+    let w = 40;
+    let add_x = 1;
+    let add_y = 1;
+    let add_deg = 1;
+    let deg = 0;
+
+    let color = "#" + parseInt(Math.random() * 0xffffff).toString(16);
+    // console.log(color);
+
+    let time_handle = window.setInterval(()=>{
+      c.clearRect(0,0,500,500);
+      c.save();
+      c.translate(px,py);
+      c.rotate(deg * Math.PI / 180);
+      c.fillStyle = color;
+      c.fillRect(x,y,w,w);
+      c.restore();
+      add_x = (px - 20 < 0 || px + 20 > 500) ? add_x * -1 : add_x;
+      add_y = (py - 20 < 0 || py + 20 > 250) ? add_y * -1 : add_y;
+      if(px - 20 < 0 || px + 20 > 500 || py - 20 < 0 || py + 20 > 250){
+        add_deg *= -1;
+        let ans;
+        while(true){
+          ans = Math.random();
+          if(ans > 0.2) break;
+        }
+        color = "#" + parseInt(ans * 0xffffff ).toString(16);
+      }
+      deg +=add_deg;
+      px +=add_x;
+      py += add_y;
+    })
+   }
+  </script>
+</body>
+</html>

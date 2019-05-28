@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>树</title>
+</head>
+<body>
+  
+  <canvas id="MyCanvas" width=600 height=500></canvas>
+
+  <script>
+    function drawTree(c,start_x,start_y,len,angel,depth,branchWidth){
+      if(!depth)return;
+      let end_x = start_x + len * Math.cos(angel); //300
+      let end_y = start_y + len * Math.sin(angel); //420
+      let new_branchWidth = branchWidth * 0.7;
+      c.beginPath();
+      c.lineCap = "round";
+      c.lineWidth = branchWidth;
+      c.moveTo(start_x,start_y);
+      c.lineTo(end_x,end_y);
+
+      if(depth <= 1 ) c.strokeStyle = 'rgb(0,' + (((Math.random() * 64) + 128 ) >> 0) + ',0)';
+      else c.strokeStyle = 'rgb(' + (((Math.random() * 64 ) + 64 ) >> 0) + ',50,25)';
+      c.stroke();
+
+      let sub_branches = Math.random() * 2 + 1;
+      for(let i = 0; i < sub_branches; i++){
+        let nwe_angle = angel + Math.random() * Math.PI / 2 - Math.PI / 4;
+        let new_len = len * (0.7 + Math.random() * 0.3);
+        drawTree(c,end_x,end_y,new_len,nwe_angle,depth -1,new_branchWidth);
+      }
+
+
+     
+    }
+
+    window.onload = ()=>{
+      let c = document.getElementById("MyCanvas").getContext("2d");
+      drawTree(c, 300, 480, 60, -Math.PI / 2 , 10, 10);
+    }
+  </script>
+</body>
+</html>

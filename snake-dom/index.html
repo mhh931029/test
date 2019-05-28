@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>贪吃蛇</title>
+  <style>
+    #mainDiv{
+      background-color: #C7EDCC;
+      width: 500px;
+      height: 500px;
+      border:15px solid black;
+      float: left;
+    }
+    #rightDiv{
+      width: 150px;
+      height: 530px;
+      background-color: gray;
+      float: left;
+    }
+    button{
+      width: 50px;
+      height: 40px;
+      position: relative;
+      left: 20px;
+    }
+    p{
+      color: yellowgreen;
+      position: relative;
+      left: 20px;
+    }
+    #txt{
+      margin-top: 100px;
+    }
+    span{background-color:gray;width:25px; height:25px; float:left; } 
+  </style>
+</head>
+<body onload="G.init()">
+    <div>
+      <div id="mainDiv">
+      </div>
+
+      <div id="rightDiv">
+        <p style="font-size: 20px;">Length</p>
+        <p style="font-size: 20px;">2</p>
+        <button style="margin-top: 40px;" onclick="javascript:window.location.reload();">重玩</button><br>
+        <button style="margin-top: 20px;" onclick="G.pause()">暂停</button>
+        <p id="txt">
+          游戏规则:<br/>
+          空格键:游戏开始<br/>
+          空格键:暂停/开始<br/>
+          方向键:控制方向<br/>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      var G = {
+        f:[],
+        p:[],
+        go:[[0,-1],[-1,0],[0,1],[1,0]],
+        sign:[],
+        dir:[],
+        timeHandle:0,
+        flag:false,
+        speed:0,
+
+        init:function(){
+          G.speed = 100; //速度
+          var mainDiv = document.getElementById('mainDiv');
+          for(var i = 0; i < 20 * 20; i++){
+            G.f.push(mainDiv.appendChild(document.createElement("span")));
+            G.sign[i] = false;
+          }
+
+          document.onkeydown = function(e){
+            if(e.which === 32){
+              G.pause();
+              return ;
+            }
+            var curDir = e.which - 37;
+            if(curDir < 0 || curDir > 4) return;
+            if(Math.abs(G.dir - curDir) !== 2) G.dir = curDir;
+          }
+
+          G.gameStart();
+        },
+
+        gameStart:function(){
+          var a, r, c;
+          while(true){
+            a = parseInt(Math.random() * 400);
+            r = Math.floor(a / 20) + 1;
+            c = a - (r - 1) * 20 +1;
+            if(Math.abs(r - 1) < 5 || Math.abs(r - 20) < 5 || Math.abs(c - 1) < 5 || Math.abs(c - 20) < 5) continue;
+            break; 
+          }
+
+          G.dir = Math.floor(Math.random() * 4);
+          var fr = r + G.go[G.dir][0];
+          var fc = c + G.go[G.dir][1];
+          var fa = (fr - 1) * 20 + fc - 1;
+          G.f[a].style.visibility = 'hidden';
+          G.f[fa].style.visibility = 'hidden';
+          G.sign[a] = G.sign[fa] = true;
+          G.p.push(fa,a);
+          G.createSquare();
+          G.timeHandle = window.setInterval(function(){
+            G.move();
+          },
+          G.speed);
+          G.pause();
+        },
+
+        createSquare:function(){
+          while(true){
+            var pos = parseInt(Math.random() * 400);
+            if(G.sign[pos] === true) continue;
+            G.f[pos].style.visibility = 'hidden';
+            break;
+          }
+        },
+
+        move:function(){
+          var firstIndex = G.p[0];
+          var r = Math.floor(firstIndex / 20) + 1;
+          var c = firstIndex - (r - 1) * 20 + 1;
+          var fr = r + G.go[G.dir][0];
+          var fc = c + G.go[G.dir][1];
+
+          if(fr < 1 || fr > 20 || fc < 1 || fc >20){
+            clearInterval(G.timeHandle);
+            alert("撞到墙了!游戏结束!\n" + "得分:" + document.getElementsByTagName("p")[1].innerHTML);
+            return;
+          }
+
+          if(G.dir == 0) firstIndex -= 1;
+          else if(G.dir == 1)firstIndex -=20;
+          else if(G.dir == 2)firstIndex +=1;
+          else firstIndex +=20;
+          if(G.f[firstIndex].style.visibility === 'hidden'){
+            if(G.sign[firstIndex] === true){
+              clearInterval(G.timeHandle);
+              alert("傻逼了吧?撞到自己了!游戏结束!\n" + "得分:" + document.getElementsByTagName("p")[1].innerHTML);
+              return;
+            }
+
+            var myString = document.getElementsByTagName("p")[1].innerHTML;
+            document.getElementsByTagName("p")[1].innerHTML = parseInt(myString) + 1;
+            G.sign[firstIndex] = true;
+            G.p.unshift(firstIndex);
+            G.createSquare();
+          }else{
+            var lastIndex = G.p.pop();
+            G.sign[lastIndex] = false;
+            G.f[lastIndex].style.visibility = 'visible';
+            G.p.unshift(firstIndex);
+            G.sign[firstIndex] = true;
+            G.f[firstIndex].style.visibility = 'hidden';
+          }
+        },
+
+        pause:function(){
+          if(G.flag == false){
+            G.flag = true;
+            clearInterval(G.timeHandle);
+          }else{
+            G.flag = false;
+            G.timeHandle = window.setInterval(function(){
+              G.move();
+            },
+            G.speed);
+          }
+        }
+      }
+    </script>
+</body>
+</html>

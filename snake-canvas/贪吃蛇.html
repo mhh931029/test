@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Snake Game</title>
+</head>
+<body>
+
+  <canvas id="myCanvas" width="500px" height="500px" style="background-color: gray; border:5px solid red;"></canvas>
+
+
+<script>
+    window.onload = function(){
+      var c = document.getElementById("myCanvas").getContext("2d");
+      c.fillStyle = "#C7EDCC";
+      var a = 25;
+          b = 25;
+      var G = {
+        px:null,
+        py:null,
+        able_x: null,
+        able_y:null,
+        dir:null,
+        handle:null,
+        go:[[-1,0],[0,-1],[1,0],[0,1]],
+        f:[],
+        s:[],
+        start:function(){
+          document.onkeydown = function(e){
+            if(Math.abs(e.which - 37 - G.dir) === 2) return;
+            G.dir = e.which - 37;
+          };
+
+          while(true){
+            let start_num = G.getNum();
+            G.px = start_num % 20;
+            G.py = Math.floor(start_num / 20);
+            if(G.px < 5 || G.px > 15 || G.py < 5 || G.py > 15) continue;
+            c.fillRect(G.px * 25, G.py * 25, a, b);
+            G.dir = Math.floor(Math.random() * 4);
+            G.f.unshift(G.py * 20 + G.px);
+            G.s[G.py * 20 + G.px] = true;
+            G.px +=G.go[G.dir][0];
+            G.py +=G.go[G.dir][1];
+            c.fillRect(G.px * 25, G.py * 25, a, b );
+            G.f.unshift(G.py * 20 + G.px);
+            G.s[G.py * 20 + G.px] = true;
+            console.log(G);
+            break;
+          }
+          G.createSquaer();
+          G.move();
+        },
+        move:function(){
+          G.handle = window.setInterval(function(){
+            let x = G.px + G.go[G.dir][0];
+            let y = G.py + G.go[G.dir][1];
+           
+           if(x < 0 || x > 19 || y < 0 || y > 19 || G.s[y * 20 + x] === true){
+             clearInterval(G.handle);
+             alert("Game Over!!!");
+             return;
+           }
+
+           c.fillRect(x * 25 , y * 25, a,b);
+           G.f.unshift(y * 20 + x);
+           G.s[y * 20 + x] = true;
+           G.px = x;
+           G.py = y;
+
+           if(x == G.able_x && y == G.able_y ) G.createSquaer();
+           else{
+             let last = G.f.pop();
+             G.s[last] = false;
+             let last_x = last % 20;
+             let last_y = Math.floor(last / 20);
+             c.clearRect(last_x * 25,last_y * 25,a,b);
+           }
+          },
+          100);
+        },
+        createSquaer:function(){
+          while(true){
+            let create_num = G.getNum();
+            if(G.s[create_num]) continue;
+            G.able_x = create_num % 20;
+            G.able_y = Math.floor(create_num / 20);
+            c.fillRect(G.able_x * 25, G.able_y * 25, a,b);
+            break;
+          }
+        },
+        getNum:function(){
+          return Math.floor(Math.random() * 400);
+        }
+      }
+     G.start();
+    }
+</script>
+</body>
+</html>
